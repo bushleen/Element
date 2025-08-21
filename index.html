@@ -7,7 +7,7 @@
     body {
       font-family: "Kanit", sans-serif;
       font-size: 20px;
-      color: white;
+      color: black;
       background: #2c2c2c;
       margin: 0;
       padding: 20px;
@@ -23,7 +23,7 @@
       color: white;
     }
     .instructions, .summary {
-      background: #222b13;
+      background: #fae0cf;
       border: 1px solid #ccc;
       padding: 15px;
       margin-top: 20px;
@@ -43,8 +43,9 @@
       width: 100%;
       max-width: 1200px;
     }
+
     .form-section {
-      background: #222b13;
+      background: #fae0cf;
       border: 1px solid #ccc;
       padding: 15px;
       border-radius: 8px;
@@ -72,39 +73,20 @@
       padding: 5px;
       border-radius: 5px;
       border: 1px solid #666;
-      background: #111;
-      color: white;
+      background: #fff;
+      color: black;
     }
 
     .form-row button {
       padding: 6px 12px;
       border: none;
-      border-radius: 5px;
-      background: #4CAF50;
-      color: white;
+      border-radius: 10px;
+      background: #fff;
+      color: black;
       cursor: pointer;
     }
     .form-row button:hover {
-      background: #45a049;
-    }
-
-    /* ปุ่มแผ่นวงกลมล่างและบน */
-    .circle-btn {
-      padding: 15px 30px;     /* ขยายขนาดปุ่ม */
-      font-size: 20px;        /* ตัวอักษรใหญ่ขึ้น */
-      border: none;
-      border-radius: 10px;
-      background: #4CAF50;
-      color: white;
-      cursor: pointer;
-      margin: 5px;
-      transition: background 0.3s;
-    }
-    .circle-btn:hover {
-      background: #45a049;
-    }
-    .circle-btn.active {
-      background: #2196F3;   /* สีฟ้าเมื่อเลือก */
+      background: #d2d2d2;
     }
 
     #canvas {
@@ -113,9 +95,33 @@
       border: 1px solid #2c2c2c;
       background: #2c2c2c;
       cursor: grab;
+      touch-action: none; /* ช่วยให้ลากบนมือถือ滑ไม่ชน gesture */
     }
     #canvas:active {
       cursor: grabbing;
+    }
+
+    /* ปุ่มแผ่นวงกลมล่างและบน (ขยาย + สีเมื่อคลิกค้าง) */
+    .circle-btn {
+      padding: 15px 30px;     /* ขยายขนาดปุ่ม */
+      font-size: 20px;        /* ตัวอักษรใหญ่ขึ้น */
+      border: none;
+      border-radius: 10px;
+      background: #fff;
+      color: black;
+      cursor: pointer;
+      margin: 5px;
+      transition: background 0.2s, transform 0.05s;
+      user-select: none;
+    }
+    .circle-btn:hover {
+      background: #a5a4a5;
+    }
+    .circle-btn:active {
+      transform: translateY(1px);
+    }
+    .circle-btn.active {
+      background: #d2d2d2;
     }
   </style>
 </head>
@@ -126,15 +132,15 @@
   <div class="instructions">
     <h2>วิธีใช้</h2>
     <ol>
-      <li>กรอกวันเดือนปีเกิด กดคำนวณวันอ้างอิง</li>
+      <li>กรอกวันเดือนปีเกิด กดคำนวณวันที่อ้างอิง</li>
       <li>กดปุ่มแผ่นวงกลมล่างหรือบน เพื่อเลือกและคลิกที่แผ่นวงกลมเพื่อหมุน</li>
-      <li>หมุนแผ่นวงกลมล่าง ให้ลูกศรชี้ตรงกับวันอ้างอิง</li>
-      <li>หมุนแผ่นวงกลมบน ให้ลูกศรด้านซ้ายมือชี้ตรงกับวันเดือนเกิดของผู้ต้องการตรวจ...</li>
-      <li>อ่านผลที่ลูกศรด้านขวามือ...</li>
+      <li>หมุนแผ่นวงกลมล่าง ให้ลูกศรชี้ตรงกับวันที่อ้างอิง</li>
+      <li>หมุนแผ่นวงกลมบน ให้ลูกศรด้านซ้ายมือชี้ตรงกับวันเดือนเกิดของผู้ต้องการตรวจให้ปลายลูกศรด้านซ้ายมือ(ด้านที่ไม่มีช่องแถบสี) ชี้ตรงกับวันเกิด</li>
+      <li>อ่านผลที่ลูกศรด้านขวามือ(ด้านที่มีช่องแถบสี) จะแสดงถึงวันปฏิสนธิ และมีช่องว่าง มองเห็นแถบสีต่าง ๆ ซึ่งจะบอกให้ทราบถึงธาตุเจ้าเรือน </li>
     </ol>
   </div>
 
-  <!-- ส่วนกรอกข้อมูล -->
+  <!-- ส่วนกรอกข้อมูล (ย้ายออกมาอยู่ใต้ "วิธีใช้") -->
   <div class="form-section">
     <div class="form-row">
       <label>วันที่</label>
@@ -167,17 +173,18 @@
       <label>ปี (พ.ศ.)</label>
       <input type="number" id="year" placeholder="เช่น 2568">
 
-      <button onclick="calculateReference()">คำนวณวันอ้างอิง</button>
+      <button onclick="calculateReference()">คำนวณวันที่อ้างอิง</button>
     </div>
 
     <p id="referenceResult"></p>
 
     <hr>
-    <button id="btn-lower" class="circle-btn" onclick="selectImage(2)">แผ่นวงกลมล่าง</button>
-    <button id="btn-upper" class="circle-btn" onclick="selectImage(3)">แผ่นวงกลมบน</button>
+    <!-- ปุ่มที่ขยายและเปลี่ยนสีค้างเมื่อเลือก -->
+    <button id="btnLower" class="circle-btn" onclick="selectImage(2)" aria-pressed="false">แผ่นวงกลมล่าง</button>
+    <button id="btnUpper" class="circle-btn" onclick="selectImage(3)" aria-pressed="false">แผ่นวงกลมบน</button>
   </div>
 
-  <!-- container -->
+  <!-- container มีเฉพาะวงกลมแล้ว -->
   <div class="container">
     <canvas id="canvas"></canvas>
   </div>
@@ -197,41 +204,43 @@
     </p>
     <h2>การประเมินธาตุ</h2>
     <ul>
-      <li><b>ธาตุดิน</b> โดยปกติคนธาตุดินจะเป็นคนที่แข็งแรง ไม่ค่อยป่วย อาจมีปัญหาสุขภาพด้านกล้ามเนื้อกระดูก<br>
+      <li><b>ธาตุดิน</b><br>
+      โดยปกติคนธาตุดินจะเป็นคนที่แข็งแรง ไม่ค่อยป่วย<br>
+      อาจมีปัญหาสุขภาพด้านกล้ามเนื้อกระดูก<br>
       ควรรับประทานอาหารเน้นที่รสฝาด หวาน มัน เค็ม เมื่อธาตุดินเสียสมดุล</li>
-      <li><b>ธาตุน้ำ</b>
-      ศอเสมหะ : อาจมีปัญหาด้านสุขภาพที่เกี่ยวข้องกับทางเดินหายใจส่วนบน ภูมิแพ้ ไข้หวัด 
-      อุระเสมหะ : อาจมีปัญหาด้านสุขภาพที่เกี่ยวข้องกับช่องอก เช่น ปอด ตับ หัวใจ 
-      คูถเสมหะ : อาจมีปัญหาด้านสุขภาพที่เกี่ยวข้องกับระบบลำไส้ การย่อยและการขับถ่าย
+      <li><b>ธาตุน้ำ</b><br>
+      ศอเสมหะ : อาจมีปัญหาด้านสุขภาพที่เกี่ยวข้องกับทางเดินหายใจส่วนบน ภูมิแพ้ ไข้หวัด<br> 
+      อุระเสมหะ : อาจมีปัญหาด้านสุขภาพที่เกี่ยวข้องกับช่องอก เช่น ปอด ตับ หัวใจ<br>
+      คูถเสมหะ : อาจมีปัญหาด้านสุขภาพที่เกี่ยวข้องกับระบบลำไส้ การย่อยและการขับถ่าย<br>
       ควรรับประทานอาหารเน้นที่รสเปรี้ยว ขม เมื่อธาตุน้ำเสียสมดุล</li>
-      <li><b>ธาตุลม</b>
-      สุมนาวาตะ : อาจจะมีปัญหาเรื่องโรคที่เกี่ยวข้องกับธาตุลมภาพรวมในร่างกาย
-      สัตถกวาตะ : อาจจะมีปัญหาเรื่องโรคอาการปวดเมื่อย เจ็บเสียด จุกเสียด
-      หทัยวาตะ : อาจจะมีปัญหาเรื่องความกังวล ความรู้สึก ความเครียด ระบบหัวใจ
+      <li><b>ธาตุลม</b><br>
+      สุมนาวาตะ : อาจจะมีปัญหาเรื่องโรคที่เกี่ยวข้องกับธาตุลมภาพรวมในร่างกาย<br>
+      สัตถกวาตะ : อาจจะมีปัญหาเรื่องโรคอาการปวดเมื่อย เจ็บเสียด จุกเสียด<br>
+      หทัยวาตะ : อาจจะมีปัญหาเรื่องความกังวล ความรู้สึก ความเครียด ระบบหัวใจ<br>
       ควรรับประทานอาหารเน้นที่รสเผ็ดร้อน เมื่อธาตุลมเสียสมดุล</li>
-      <li><b>ธาตุไฟ</b>
-      พัทธปิตตะ : อาจมีปัญหาด้านสุขภาพที่เกี่ยวข้องกับระบบน้ำดี ตับ ตับอ่อน 
-      อพัทธะปิตตะ : อาจมีปัญหาด้านสุขภาพที่เกี่ยวข้องกับระบบพลังงาน ฮอร์โมน
-      กำเดา : อาจมีปัญหาด้านสุขภาพที่เกี่ยวข้องกับระบบเลือด อ่อนเพลีย การนอน
+      <li><b>ธาตุไฟ</b><br>
+      พัทธปิตตะ : อาจมีปัญหาด้านสุขภาพที่เกี่ยวข้องกับระบบน้ำดี ตับ ตับอ่อน<br>
+      อพัทธะปิตตะ : อาจมีปัญหาด้านสุขภาพที่เกี่ยวข้องกับระบบพลังงาน ฮอร์โมน<br>
+      กำเดา : อาจมีปัญหาด้านสุขภาพที่เกี่ยวข้องกับระบบเลือด อ่อนเพลีย การนอน<br>
       ควรรับประทานอาหารเน้นที่รสขม เย็น จืด เมื่อธาตุไฟเสียสมดุล</li>
-      <br>
-      การรับประทานอาหารเป็นคำแนะนำเบื้องต้น ตามการประเมินธาตุเจ้าเรือนด้วยตนเอง
-      อาจไม่สอดคล้องกับอาการของธาตุที่ผิดปกติซึ่งแสดงผลจริง ณ ช่วงเวลานั้นๆ 
-      ควรปรึกษาแพทย์แผนไทยใกล้ท่านเพื่อตรวจรักษาโดยละเอียดอีกครั้งหนึ่ง
     </ul>
+    <p>
+      การรับประทานอาหารเป็นคำแนะนำเบื้องต้น ตามการประเมินธาตุเจ้าเรือนด้วยตนเอง<br>
+      อาจไม่สอดคล้องกับอาการของธาตุที่ผิดปกติซึ่งแสดงผลจริง ณ ช่วงเวลานั้นๆ<br>
+      ควรปรึกษาแพทย์แผนไทยใกล้ท่านเพื่อตรวจรักษาโดยละเอียดอีกครั้งหนึ่ง
+    </p>
     <p>
       <b>Credit</b><br>
       แผ่นวงกลม : พ.ญ.เพ็ญนภา ทรัพย์เจริญ ศูนย์พัฒนาตำราฯ มูลนิธิการแพทย์แผนไทยพัฒนา<br>
       การแปลผล : ตำราการแพทย์ไทยเดิม (แพทยศาสตร์สงเคราะห์ ฉบับอนุรักษ์ เล่มที่ 1)<br>
     </p>
     <p>  
-      เว็บไซต์จัดทำขึ้นเพื่อเผยแพร่ความรู้ด้านสุขภาพ มีลิขสิทธิ์ โดย นางสาวอรสา โอภาสวัฒนา
+      เว็บไซต์จัดทำขึ้นเพื่อเผยแพร่ความรู้ด้านสุขภาพ มีลิขสิทธิ์ โดย นางสาวอรสา โอภาสวัฒนา<br>
       เปิดให้แพทย์แผนไทย/แพทย์แผนไทยประยุกต์ที่สนใจ และประชาชนใช้ฟรี
       ไม่อนุญาตให้นำไปขายต่อ หรือแสวงหาผลกำไร
     </p>
     <p>
-      หากท่านเห็นว่ามีประโยชน์และอยากสนับสนุน สามารถโอนส่งกำลังใจได้ที่
-      เลขที่บัญชี 680-112-9955 ธนาคารกรุงศรีอยุธยา นางสาวอรสา โอภาสวัฒนา
+      หากท่านเห็นว่ามีประโยชน์และอยากสนับสนุน สามารถโอนส่งกำลังใจได้ที่เลขที่บัญชี 680-112-9955 ธนาคารกรุงศรีอยุธยา นางสาวอรสา โอภาสวัฒนา
     </p>
   </div>
 
@@ -255,7 +264,7 @@
     let isDragging = false;
     let lastAngle = 0;
 
-    // ตารางวันอ้างอิง
+    // ตารางวันที่อ้างอิง
     const referenceDates = {
       2454:"3 มีนาคม",2455:"22 มีนาคม",2456:"11 มีนาคม",2457:"1 มีนาคม",2458:"19 มีนาคม",2459:"8 มีนาคม",
       2460:"25 กุมภาพันธ์",2461:"17 มีนาคม",2462:"5 มีนาคม",2463:"24 มีนาคม",2464:"13 มีนาคม",
@@ -287,24 +296,28 @@
       const year = parseInt(document.getElementById("year").value);
       if (referenceDates[year]) {
         document.getElementById("referenceResult").innerText =
-          "วันอ้างอิง: " + referenceDates[year];
+          "วันที่อ้างอิง: " + referenceDates[year];
       } else {
         document.getElementById("referenceResult").innerText =
-          "ไม่พบข้อมูลวันอ้างอิงของปีนี้";
+          "ไม่พบข้อมูลวันที่อ้างอิงของปีนี้";
       }
     }
 
+    // ---- เลือกแผ่นที่ต้องการหมุน + เปลี่ยนสีปุ่มค้าง (active) ----
     function selectImage(num) {
       selected = num;
 
-      // reset active class
-      document.getElementById("btn-lower").classList.remove("active");
-      document.getElementById("btn-upper").classList.remove("active");
+      // ล้าง active ทุกปุ่มก่อน
+      document.querySelectorAll('.circle-btn').forEach(btn => {
+        btn.classList.remove('active');
+        btn.setAttribute('aria-pressed', 'false');
+      });
 
-      if (num === 2) {
-        document.getElementById("btn-lower").classList.add("active");
-      } else if (num === 3) {
-        document.getElementById("btn-upper").classList.add("active");
+      // ใส่ active ให้ปุ่มที่ถูกเลือก
+      const targetBtn = (num === 2) ? document.getElementById('btnLower') : document.getElementById('btnUpper');
+      if (targetBtn) {
+        targetBtn.classList.add('active');
+        targetBtn.setAttribute('aria-pressed', 'true');
       }
     }
 
@@ -355,13 +368,13 @@
 
     window.addEventListener("mouseup", () => { isDragging = false; });
 
-    // Touch events
+    // -------------------- Touch Events (มือถือ) --------------------
     canvas.addEventListener("touchstart", e => {
       if (!selected) return;
       isDragging = true;
       const touch = e.touches[0];
       lastAngle = getAngle(touch.clientX, touch.clientY);
-      e.preventDefault();
+      e.preventDefault(); // ป้องกันการเลื่อนหน้าจอ
     });
 
     canvas.addEventListener("touchmove", e => {
@@ -373,7 +386,7 @@
       if (selected === 3) angle3 += delta;
       lastAngle = angle;
       drawImages();
-      e.preventDefault();
+      e.preventDefault(); // ป้องกันการเลื่อนหน้าจอ
     });
 
     canvas.addEventListener("touchend", () => {
@@ -385,17 +398,13 @@
       img.onload = () => {
         loaded++;
         if (loaded === 3) {
+          // ลดขนาดลง 20%
           canvas.width = img1.width * 0.8;
           canvas.height = img1.height * 0.8;
           drawImages();
         }
       };
     });
-
-    // ตารางวันอ้างอิง (ย่อไว้)
-    const referenceDates = { 2568: "14 มีนาคม", 2569: "3 มีนาคม" };
   </script>
 </body>
 </html>
-
-
