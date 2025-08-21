@@ -267,6 +267,31 @@
 
     window.addEventListener("mouseup", () => { isDragging = false; });
 
+      // -------------------- Touch Events (มือถือ) --------------------
+  canvas.addEventListener("touchstart", e => {
+    if (!selected) return;
+    isDragging = true;
+    const touch = e.touches[0];
+    lastAngle = getAngle(touch.clientX, touch.clientY);
+    e.preventDefault(); // ป้องกันการเลื่อนหน้าจอ
+  });
+
+  canvas.addEventListener("touchmove", e => {
+    if (!isDragging) return;
+    const touch = e.touches[0];
+    const angle = getAngle(touch.clientX, touch.clientY);
+    const delta = angle - lastAngle;
+    if (selected === 2) angle2 += delta;
+    if (selected === 3) angle3 += delta;
+    lastAngle = angle;
+    drawImages();
+    e.preventDefault(); // ป้องกันการเลื่อนหน้าจอ
+  });
+
+  canvas.addEventListener("touchend", () => {
+    isDragging = false;
+  });
+
     let loaded = 0;
     [img1,img2,img3].forEach(img => {
       img.onload = () => {
@@ -281,6 +306,7 @@
   </script>
 </body>
 </html>
+
 
 
 
