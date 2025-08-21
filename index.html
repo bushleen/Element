@@ -14,6 +14,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;   /* จัดให้อยู่กึ่งกลางแนวตั้ง */
+      min-height: 100vh;         /* เต็มจอแนวตั้ง */
     }
     h1 {
       text-align: center;
@@ -41,36 +43,61 @@
       width: 100%;
       max-width: 1200px;
     }
-    .form-section {
-      background: #222b13;
-      border: 1px solid #ccc;
-      padding: 15px;
-      border-radius: 8px;
-      width: 250px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .form-section label {
-      display: block;
-      margin: 8px 0 4px;
-    }
-    .form-section input, .form-section select {
-      width: 100%;
-      padding: 1px;
-      margin-bottom: 10px;
-    }
-    button {
-      padding: 6px 12px;
-      margin-top: 5px;
-      cursor: pointer;
-    }
-    #canvas {
-      border: 1px solid #33401c;
-      background: #33401c;
-      cursor: grab;
-    }
-    #canvas:active {
-      cursor: grabbing;
-    }
+.form-section {
+  background: #222b13;
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 1200px;        /* ยาวเต็มเท่ากับกล่องวิธีใช้ */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin: 20px auto;
+}
+
+/* จัด input/select/button ให้อยู่ในแถวเดียว */
+.form-row {
+  display: flex;
+  flex-wrap: wrap;          /* ถ้าหน้าจอเล็กจะตัดลงบรรทัดใหม่ */
+  gap: 10px;                /* ระยะห่างระหว่างช่อง */
+  align-items: center;
+}
+
+.form-row label {
+  margin-right: 5px;
+  white-space: nowrap;
+}
+
+.form-row select,
+.form-row input {
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #666;
+  background: #111;
+  color: white;
+}
+
+.form-row button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 5px;
+  background: #4CAF50;
+  color: white;
+  cursor: pointer;
+}
+.form-row button:hover {
+  background: #45a049;
+}
+
+  #canvas {
+    display: block;
+    margin: auto;
+    border: 1px solid #33401c;
+    background: #33401c;
+    cursor: grab;
+  }
+  #canvas:active {
+    cursor: grabbing;
+  }
   </style>
 </head>
 <body>
@@ -83,50 +110,59 @@
       <li>กรอกวันเดือนปีเกิด กดคำนวณวันอ้างอิง</li>
       <li>กดปุ่มแผ่นวงกลมล่างหรือบน เพื่อเลือกและคลิกที่แผ่นวงกลมเพื่อหมุน</li>
       <li>หมุนแผ่นวงกลมล่าง ให้ลูกศรชี้ตรงกับวันอ้างอิง</li>
-      <li>หมุนแผ่นวงกลมบน ให้ลูกศรด้านซ้ายมือชี้ตรงกับวันเดือนเกิดของผู้ต้องการตรวจ โดยให้ปลายลูกศรด้านซ้ายมือ (ด้านที่ไม่มีช่องแถบสี) ชี้ตรงกับวันเกิด</li>
-      <li>อ่านผลที่ลูกศรด้านขวามือ (ด้านที่มีช่องแถบสี) ซึ่งจะแสดงถึงวันปฏิสนธิ และมีช่องว่าง มองเห็นแถบสีต่าง ๆ บอกถึงธาตุเจ้าเรือน</li>
+      <li>หมุนแผ่นวงกลมบน ให้ลูกศรด้านซ้ายมือชี้ตรงกับวันเดือนเกิดของผู้ต้องการตรวจ...</li>
+      <li>อ่านผลที่ลูกศรด้านขวามือ...</li>
     </ol>
   </div>
 
+  <!-- ส่วนกรอกข้อมูล (ย้ายออกมาอยู่ใต้ "วิธีใช้") -->
+<div class="form-section">
+  <div class="form-row">
+    <label>วันที่</label>
+    <select id="day">
+      <option value="">-- เลือกวัน --</option>
+      <script>
+        for (let i = 1; i <= 31; i++) {
+          document.write(`<option value="${i}">${i}</option>`);
+        }
+      </script>
+    </select>
+
+    <label>เดือน</label>
+    <select id="month">
+      <option value="">-- เลือกเดือน --</option>
+      <option value="1">มกราคม</option>
+      <option value="2">กุมภาพันธ์</option>
+      <option value="3">มีนาคม</option>
+      <option value="4">เมษายน</option>
+      <option value="5">พฤษภาคม</option>
+      <option value="6">มิถุนายน</option>
+      <option value="7">กรกฎาคม</option>
+      <option value="8">สิงหาคม</option>
+      <option value="9">กันยายน</option>
+      <option value="10">ตุลาคม</option>
+      <option value="11">พฤศจิกายน</option>
+      <option value="12">ธันวาคม</option>
+    </select>
+
+    <label>ปี (พ.ศ.)</label>
+    <input type="number" id="year" placeholder="เช่น 2568">
+
+    <button onclick="calculateReference()">คำนวณวันอ้างอิง</button>
+  </div>
+
+  <p id="referenceResult"></p>
+
+  <hr>
+  <button onclick="selectImage(2)">แผ่นวงกลมล่าง</button>
+  <button onclick="selectImage(3)">แผ่นวงกลมบน</button>
+</div>
+
+
+  <!-- container มีเฉพาะวงกลมแล้ว -->
   <div class="container">
-    <!-- ส่วนกรอกข้อมูล -->
-    <div class="form-section">
-      <label>วันที่</label>
-      <select id="day">
-        <option value="">-- เลือกวัน --</option>
-        <script>
-          for (let i = 1; i <= 31; i++) {
-            document.write(`<option value="${i}">${i}</option>`);
-          }
-        </script>
-      </select>
-
-      <label>เดือน</label>
-      <select id="month">
-        <option value="">-- เลือกเดือน --</option>
-        <option value="1">มกราคม</option>
-        <option value="2">กุมภาพันธ์</option>
-        <option value="3">มีนาคม</option>
-        <option value="4">เมษายน</option>
-        <option value="5">พฤษภาคม</option>
-        <option value="6">มิถุนายน</option>
-        <option value="7">กรกฎาคม</option>
-        <option value="8">สิงหาคม</option>
-        <option value="9">กันยายน</option>
-        <option value="10">ตุลาคม</option>
-        <option value="11">พฤศจิกายน</option>
-        <option value="12">ธันวาคม</option>
-      </select>
-
-      <label>ปี (พ.ศ.)</label>
-      <input type="number" id="year" placeholder="เช่น 2568">
-      <button onclick="calculateReference()">คำนวณวันอ้างอิง</button>
-      <p id="referenceResult"></p>
-
-      <hr>
-      <button onclick="selectImage(2)">แผ่นวงกลมล่าง</button>
-      <button onclick="selectImage(3)">แผ่นวงกลมบน</button>
-    </div>
+    <canvas id="canvas"></canvas>
+  </div>
 
     <!-- แสดงวงกลม -->
     <canvas id="canvas"></canvas>
@@ -293,21 +329,21 @@
     isDragging = false;
   });
 
-    let loaded = 0;
-    [img1,img2,img3].forEach(img => {
-      img.onload = () => {
-        loaded++;
-        if (loaded === 3) {
-          canvas.width = img1.width;
-          canvas.height = img1.height;
-          drawImages();
-        }
-      };
-    });
+let loaded = 0;
+[img1,img2,img3].forEach(img => {
+  img.onload = () => {
+    loaded++;
+    if (loaded === 3) {
+      // ลดขนาดลง 20%
+      canvas.width = img1.width * 0.8;
+      canvas.height = img1.height * 0.8;
+      drawImages();
+    }
+  };
+});
   </script>
 </body>
 </html>
-
 
 
 
